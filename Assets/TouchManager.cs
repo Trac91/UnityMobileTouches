@@ -9,7 +9,7 @@ public class TouchManager : MonoBehaviour
     private float tapThreshold = 0.4f;
     private float starting_distance_to_selected_object;
     private float initDistance;
-    
+
     public RaycastHit info;
 
     private Vector3 startingObjectScale;
@@ -17,14 +17,15 @@ public class TouchManager : MonoBehaviour
     private float scaleSize;
 
     private float sensitivity = 0.01f;
+    private float speed = 0.01f;
 
     private float startingTouchAngle;
-    Quaternion startingOrientation; 
+    Quaternion startingOrientation;
     private float startingTouchDistance;
     //private CameraControl camera;
-    
+
     IControlable selectedObject;
-   
+
 
     // Start is called before the first frame update
     void Start()
@@ -73,7 +74,7 @@ public class TouchManager : MonoBehaviour
                             else
                             {
                                 selectedObject.deselectObject();
-                                
+
                             }
                         }
                     }
@@ -97,13 +98,11 @@ public class TouchManager : MonoBehaviour
                         Camera.main.transform.position += (Input.touches[0].deltaPosition.x * Camera.main.transform.right + Input.touches[0].deltaPosition.y * Camera.main.transform.up) * sensitivity;
                     }
 
-
-
                     Debug.Log("This is a drag");
                     break;
             }
 
-       
+
             if (Input.touchCount == 2)
             {
                 // Store both touches
@@ -111,24 +110,15 @@ public class TouchManager : MonoBehaviour
                 Touch touch1 = Input.GetTouch(1);
                 if (touch0.phase == TouchPhase.Began || touch1.phase == TouchPhase.Began)
                 {
-                    startingTouchDistance = Vector3.Distance(touch0.position, touch1.position);                                              //newest distance moved
 
-                    initDistance = Vector3.Distance(Input.GetTouch(0).position, Input.GetTouch(1).position);                                 //startdistace began
-
-                    scaleSize = startingTouchDistance / initDistance;                                                                        //factor is the scale size
-
-                    
-                    //Vector 3                                      Vector3   float
-                    startingObjectScale = selectedObject.getScale(initScale, scaleSize);
-
-
+                    initDistance = Vector3.Distance(Input.GetTouch(0).position, Input.GetTouch(1).position);                                
 
                     startingTouchAngle = Mathf.Rad2Deg * Mathf.Atan2(touch1.position.y - touch0.position.y, touch1.position.x - touch0.position.x);
 
                     startingOrientation = (selectedObject == null) ? Camera.main.transform.rotation : selectedObject.getRotation();
 
                 }
-               // Rotate code
+
                 if (touch0.phase == TouchPhase.Moved || touch1.phase == TouchPhase.Moved)
                 {
 
@@ -141,20 +131,62 @@ public class TouchManager : MonoBehaviour
 
                         selectedObject.setRotation(startingOrientation * Quaternion.AngleAxis(actualTurningAngle, Camera.main.transform.forward));
 
+                        startingTouchDistance = Vector3.Distance(touch0.position, touch1.position);
+
+                        scaleSize = startingTouchDistance / initDistance;
+                        selectedObject.getScale(initScale, scaleSize);
+
                     }
                     else
                     {
                         Camera.main.transform.rotation = startingOrientation * Quaternion.AngleAxis(actualTurningAngle, Camera.main.transform.forward);
+                        
                     }
 
                 }
 
+            }
+            if (Input.touchCount == 2)
+            {
+                Touch touch0 = Input.GetTouch(0);
+                Touch touch1 = Input.GetTouch(1);
+                if (touch0.phase == TouchPhase.Began || touch1.phase == TouchPhase.Began)
+                {
+                    initDistance = Vector3.Distance(Input.GetTouch(0).position, Input.GetTouch(1).position);
+                }
+                if (touch0.phase == TouchPhase.Moved || touch1.phase == TouchPhase.Moved)
+                {
+                
+                   startingTouchDistance = Vector3.Distance(touch0.position, touch1.position);
 
+                        if(selectedObject != null)
+                    {
+                         scaleSize = (startingTouchDistance / initDistance);
+                        selectedObject.getScale(initScale, scaleSize);
+
+                    }
+                    else
+                    {
+                        // Camera.main.transform = Vector3.Distance(touch0.position, touch1.position);
+                    }
+                    initDistance = startingTouchDistance;
+                }
+               
 
             }
 
         }
 
     }
-
 }
+
+//startingTouchDistance = Vector3.Distance(touch0.position, touch1.position);                                              //newest distance moved
+
+//initDistance = Vector3.Distance(Input.GetTouch(0).position, Input.GetTouch(1).position);                                 //startdistace began
+
+//scaleSize = startingTouchDistance / initDistance;                                                                        //factor is the scale size
+
+
+// Why is this throw a convert error
+//Vector 3                                      Vector3   float
+//selectedObject.getScale(initScale, scaleSize);

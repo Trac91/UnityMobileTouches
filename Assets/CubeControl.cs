@@ -53,6 +53,7 @@ public class CubeControl : MonoBehaviour, IControlable
 
     public Quaternion getRotation()
     {
+       
         throw new System.NotImplementedException();
     }
     public void deselectObject()

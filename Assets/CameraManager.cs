@@ -7,6 +7,11 @@ public class CameraManager : MonoBehaviour
 
 	void LateUpdate()
 	{
+
+		if (Input.gyro.enabled)
+		{
+			transform.Rotate(new Vector3(-Input.gyro.rotationRateUnbiased.x, -Input.gyro.rotationRateUnbiased.y, -Input.gyro.rotationRateUnbiased.z), Space.Self);
+		}
 		//	float pinchAmount = 0;
 		//	Quaternion desiredRotation = transform.rotation;
 

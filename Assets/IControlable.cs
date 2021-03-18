@@ -9,6 +9,7 @@ public interface IControlable
     void youveBeenTapped();
 
     void MoveTo(Vector3 destination);
+
     void setRotation(Quaternion quaternion);
    
     void getScale(Vector3 initscale, float factor);
